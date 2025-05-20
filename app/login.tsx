@@ -1,16 +1,17 @@
-// app/login.tsx
 import { DefaultApi, UserCredentials } from "@/services/proxy/generated";
+import { useRouter } from 'expo-router';
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { AuthenticateUserRequest } from '../services/proxy/generated/apis/DefaultApi';
 
-export default function LoginScreen() {
+export default function Login() {
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const defaultLocale = "en_US";
+  const router = useRouter();
 
+  const defaultLocale = "en_US";
   const api = new DefaultApi();
 
   const handleLogin = async () => {
@@ -19,28 +20,35 @@ export default function LoginScreen() {
     const userCredentials: UserCredentials = {
       email: email,
       password: password,
-    }
+    };
 
     const authenticateUserRequest: AuthenticateUserRequest = {
       userCredentials: userCredentials,
       locale: defaultLocale,
-    }
-
-    const authenticatedUser = await api.authenticateUser(authenticateUserRequest);
-
-    if(authenticatedUser){
-      localStorage.setItem("user", JSON.stringify(authenticatedUser));
-      console.log("User authenticated succesfully",JSON.stringify(authenticatedUser));
     };
 
+    try {
+      const authenticatedUser = await api.authenticateUser(authenticateUserRequest);
+
+      if (authenticatedUser) {
+        localStorage.setItem("user", JSON.stringify(authenticatedUser));
+        console.log("User authenticated successfully", JSON.stringify(authenticatedUser));
+
+        router.replace("/home");
+      } else {
+        console.log("Authentication failed");
+      }
+    } catch (error) {
+      console.error("Error authenticating user:", error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar sesión</Text>
+      <Text style={styles.title}>Log in</Text>
 
       <TextInput
-        placeholder="Correo electrónico"
+        placeholder="Email"
         style={styles.input}
         value={email}
         onChangeText={setEmail}
@@ -49,14 +57,14 @@ export default function LoginScreen() {
       />
 
       <TextInput
-        placeholder="Contraseña"
+        placeholder="Password"
         style={styles.input}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
 
-      <Button title="Iniciar sesión" onPress={handleLogin} />
+      <Button title="Log in" onPress={handleLogin} />
     </View>
   );
 }
