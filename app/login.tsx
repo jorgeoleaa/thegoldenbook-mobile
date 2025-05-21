@@ -36,7 +36,7 @@ export default function Login() {
       const authenticatedUser = await api.authenticateUser(authenticateUserRequest);
 
       if (authenticatedUser) {
-        saveAuthenticatedUser("user", authenticatedUser);
+        await saveAuthenticatedUser("user", authenticatedUser);
         console.log("User authenticated successfully", JSON.stringify(authenticatedUser));
 
         router.replace("/home");
