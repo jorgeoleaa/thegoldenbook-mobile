@@ -1,11 +1,16 @@
-import { DefaultApi, UserCredentials } from "@/services/proxy/generated";
+import { DefaultApi, User, UserCredentials } from "@/services/proxy/generated";
 import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { AuthenticateUserRequest } from '../services/proxy/generated/apis/DefaultApi';
 
 export default function Login() {
   
+  async function saveAuthenticatedUser(key: string, value:User){
+    await SecureStore.setItemAsync(key, JSON.stringify(value));
+  }
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -31,7 +36,7 @@ export default function Login() {
       const authenticatedUser = await api.authenticateUser(authenticateUserRequest);
 
       if (authenticatedUser) {
-        localStorage.setItem("user", JSON.stringify(authenticatedUser));
+        saveAuthenticatedUser("user", authenticatedUser);
         console.log("User authenticated successfully", JSON.stringify(authenticatedUser));
 
         router.replace("/home");

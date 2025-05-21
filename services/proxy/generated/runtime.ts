@@ -13,7 +13,7 @@
  */
 
 
-export const BASE_PATH = "http://localhost:8080/thegoldenbook-rest-api".replace(/\/+$/, "");
+export const BASE_PATH = "http://192.168.1.73:8080/thegoldenbook-rest-api".replace(/\/+$/, "");
 
 export interface ConfigurationParameters {
     basePath?: string; // override base path
